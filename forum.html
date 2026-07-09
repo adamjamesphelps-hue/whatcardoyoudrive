@@ -102,6 +102,9 @@ nav a{
 }
 nav a:hover{color:var(--ink); border-bottom-color:var(--accent);}
 nav a.current{color:var(--ink); border-bottom-color:var(--accent);}
+.header-right{display:flex; align-items:center; gap:12px;}
+.chrome-btn{display:flex; align-items:center; gap:7px; background:var(--ink); color:#fff; text-decoration:none; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:13.5px; text-transform:uppercase; letter-spacing:.3px; padding:8px 14px; border-radius:4px; transition:background .15s ease;}
+.chrome-btn:hover{background:var(--accent);}
 .counter{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:8px; background:var(--bg-panel); padding:6px 12px; border:1px solid var(--hairline);}
 .counter .mono{color:var(--ink); font-weight:700; font-variant-numeric:tabular-nums;}
 .counter .live-square{width:7px; height:7px; background:var(--accent); flex-shrink:0; animation:blink 1.6s step-start infinite;}
@@ -443,8 +446,8 @@ footer{padding:5vh clamp(20px,6vw,72px) 4vh; color:var(--muted); font-size:.85re
   // TODO: replace with your own Supabase project URL + public anon key
   // (Dashboard -> Project Settings -> API). See SUPABASE_SCHEMA.md.
   window.wcdydSupabase = window.supabase.createClient(
-    'https://shlgdzmxjasklxjgokko.supabase.co',
-    'sb_publishable_XxGl757I3QvaZhj0-yDy6A_LHIkDUGh'
+    'https://YOUR-PROJECT.supabase.co',
+    'YOUR-PUBLIC-ANON-KEY'
   );
 </script>
 </head>
@@ -468,9 +471,10 @@ footer{padding:5vh clamp(20px,6vw,72px) 4vh; color:var(--muted); font-size:.85re
     <a href="blog.html">Blog</a>
     <a href="index.html#news">News</a>
     <a href="index.html#partners">For Car Companies</a>
-    <a href="index.html#extension">Chrome Extension</a>
   </nav>
-  <div class="counter"><span class="live-square"></span>registered <span class="mono" id="total-count">0</span></div>
+  <div class="header-right">
+    <div class="counter"><span class="live-square"></span>registered <span class="mono" id="total-count">0</span></div>
+  </div>
 </header>
 <div class="page-hero">
   <div class="vin-line">PAGE 04 &mdash; TALK CARS</div>
@@ -600,7 +604,6 @@ footer{padding:5vh clamp(20px,6vw,72px) 4vh; color:var(--muted); font-size:.85re
         <a href="blog.html">Blog</a>
         <a href="index.html#news">News</a>
         <a href="index.html#partners">For Car Companies</a>
-        <a href="index.html#extension">Chrome Extension</a>
       </div>
       <div class="footer-col">
         <h5>Community</h5>
