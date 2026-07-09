@@ -1,85 +1,60 @@
-# WhatCarDoYouDrive.com
+# WhatCarDoYouDrive.com — Chrome Overlay (Prototype)
 
-A public record of what people drive and why — plus live discussion rooms,
-polls, a monthly competition, and an "insights for automakers" pitch.
+A Chrome extension that shows real driver reasons and stats on top of car
+listing sites and Google search results, pulled from the WhatCarDoYouDrive
+database.
 
-## What's in this repo
+## What it does right now
 
-```
-whatcardoyoudrive/
-├── index.html            Homepage — live feed, rankings, news, partners pitch
-├── about.html             About page
-├── blog.html               Blog page
-├── forum.html                Talk Cars — chat rooms, polls, video call, competition
-├── assets/
-│   ├── logo.svg              Vector logo
-│   └── logo.png               Raster logo (512x512)
-└── chrome-extension/       The companion Chrome extension (see its own README)
-```
+- Watches for car model names on Google search results, Autotrader,
+  CarGurus, Cars.com, Edmunds, Carvana, and KBB
+- When it recognizes a model, it drops a small card in the bottom-right
+  corner: how many people registered that car, plus their top reasons
+- The toolbar popup lets you switch it on/off, and links out to the main
+  site to add a car
+- Currently runs on **sample data** for 10 popular models (see `SAMPLE_DB`
+  in `content.js`) so you can see exactly how it behaves before any real
+  backend exists
 
-## Deploying with GitHub Pages (free, ~2 minutes)
+## How to load it in Chrome
 
-1. Push this folder to a new GitHub repo (see commands below)
-2. In the repo, go to **Settings → Pages**
-3. Under "Build and deployment," set **Source** to "Deploy from a branch"
-4. Set **Branch** to `main` and folder to `/ (root)`, then Save
-5. GitHub gives you a live URL in a minute or two:
-   `https://YOUR-USERNAME.github.io/REPO-NAME/`
-6. To use `whatcardoyoudrive.com` instead: add a `CNAME` file to this folder
-   containing just the domain, then point your domain's DNS `A`/`ALIAS`
-   record at GitHub's Pages IPs (GitHub's docs walk through this exactly:
-   https://docs.github.com/pages/configuring-a-custom-domain-for-your-github-pages-site)
+1. Unzip this folder somewhere on your computer
+2. Go to `chrome://extensions`
+3. Turn on "Developer mode" (top right)
+4. Click "Load unpacked" and select this folder
+5. Visit Google and search "2023 Honda Civic" or go to a Cars.com listing
+   for a Toyota Camry — you should see the card appear
 
-### Pushing this folder to GitHub for the first time
+## Connecting it to real data (next step)
 
-```bash
-cd whatcardoyoudrive
-git init
-git add .
-git commit -m "Initial site"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/YOUR-REPO.git
-git push -u origin main
-```
+Right now `fetchModelData()` in `content.js` just returns hardcoded sample
+data. To make this real:
 
-## Before this works for real visitors: add your Supabase credentials
-
-**The code is already wired for Supabase, not `window.storage`.** Every
-page (`index.html`, `about.html`, `blog.html`, `forum.html`) loads the
-Supabase client and calls real database queries for entries, Talk Cars
-messages, polls, and the competition. What's missing is *your* project:
-
-1. Create a free [Supabase](https://supabase.com) project
-2. Run the SQL in **[SUPABASE_SCHEMA.md](./SUPABASE_SCHEMA.md)** — it has
-   every table, index, and row-level security policy this site expects
-3. In **every HTML file**, find this block near the top of `<head>` and
-   replace the two placeholder strings with your project's URL and
-   public anon key (Supabase Dashboard → Project Settings → API):
-   ```html
-   window.wcdydSupabase = window.supabase.createClient(
-     'https://YOUR-PROJECT.supabase.co',
-     'YOUR-PUBLIC-ANON-KEY'
-   );
+1. Stand up a small public API — since you already use Supabase for Aceda,
+   the fastest path is a Supabase Edge Function (or even just Supabase's
+   auto-generated REST API) with a `submissions` table and a `models`
+   view that aggregates count + top reasons per make/model
+2. Replace the `fetchModelData()` function with a real `fetch()` call to
+   that endpoint, e.g.:
+   ```js
+   function fetchModelData(key) {
+     return fetch(`https://YOUR-PROJECT.supabase.co/rest/v1/model_stats?model=eq.${encodeURIComponent(key)}`, {
+       headers: { apikey: 'YOUR_PUBLIC_ANON_KEY' }
+     }).then(r => r.json()).then(rows => rows[0] || null);
+   }
    ```
-4. Push, and the site is live and fully functional — entries, Talk Cars,
-   polls, and the competition all persist for real
+3. Everything else (detection, widget, toggle) stays the same
 
-Until you do this, the pages will load and look correct, but every
-submit/vote action will fail silently (check the browser console — it
-logs a clear error) since there's no real project to write to yet.
+## Known limitations to fix before a public launch
 
-One design decision worth knowing about: without a login system, "one
-vote per person" on polls and the competition is enforced with a random
-ID stored in the visitor's browser (`localStorage`), not a real account.
-It stops accidental double-votes, not someone determined with two
-browsers — see the note in SUPABASE_SCHEMA.md for the honest tradeoff.
-
-## Chrome extension
-
-See `chrome-extension/README.md` for how to load it locally and what's
-left before it can go on the Chrome Web Store.
-
-## License
-
-Not yet specified — add a `LICENSE` file if you want to make this explicit
-(MIT is the common default for a project like this).
+- Model detection is a simple keyword match against page title/H1 text —
+  it will miss variants (trims, "Civic Si" vs "Civic") and can occasionally
+  mismatch. Worth improving with a proper make/model list and fuzzy
+  matching once you're past the prototype stage
+- No rate limiting or caching — a real version should cache results per
+  model for a few minutes so you're not hitting your API on every page load
+- Needs a privacy policy before submitting to the Chrome Web Store, since
+  it reads page content to detect car models (even though nothing is sent
+  anywhere in this prototype)
+- Chrome Web Store review can take a few days to a couple weeks for a new
+  extension — worth submitting early if you want this live for a launch

@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "WhatCarDoYouDrive",
+  "version": "0.1.0",
+  "description": "See real owner reasons and stats from WhatCarDoYouDrive.com while you browse car listings, reviews, and Google search results.",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "*://*.google.com/*",
+    "*://*.autotrader.com/*",
+    "*://*.cargurus.com/*",
+    "*://*.cars.com/*",
+    "*://*.edmunds.com/*",
+    "*://*.carvana.com/*",
+    "*://*.kbb.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.google.com/search*",
+        "*://*.autotrader.com/*",
+        "*://*.cargurus.com/*",
+        "*://*.cars.com/*",
+        "*://*.edmunds.com/*",
+        "*://*.carvana.com/*",
+        "*://*.kbb.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["widget.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
