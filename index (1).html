@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A public record of what people drive and why.">
+<title>WhatCarDoYouDrive.com</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjI0IiBmaWxsPSIjMTQ2QjNBIi8+CiAgPHBvbHlsaW5lIHBvaW50cz0iMjYsMzYgMzkuNSw2NC41IDUwLDM3LjUgNjAuNSw2NC41IDc0LDM2IgogICAgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkFGQUY5IiBzdHJva2Utd2lkdGg9IjguMiIKICAgIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iMzcuNSIgcj0iNSIgZmlsbD0iIzRDQTc3MSIvPgo8L3N2Zz4K">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #FFFFFF;
+  --bg-panel: #F3F5F9;
+  --card: #FFFFFF;
+  --ink: #121214;
+  --muted: #666870;
+  --hairline: #E2E4E9;
+  --accent: #146B3A;
+  --accent-2: #4CA771;
+  --radius: 4px;
+
+  --c-sedan: #146B3A;
+  --c-suv: #3B7DD8;
+  --c-coupe: #22A67B;
+  --c-convertible: #C93B8F;
+  --c-truck: #4CA771;
+  --c-hatchback: #5EAA46;
+  --c-wagon: #8A6FE0;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.serif{font-family:'Barlow Condensed',sans-serif; font-weight:700;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+section{scroll-margin-top:70px;}
+
+.checker-strip{
+  height:10px;
+  background-image:
+    linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000),
+    linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000);
+  background-size:10px 10px;
+  background-position:0 0, 5px 5px;
+  background-color:#fff;
+}
+
+.carbon{
+  background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.015) 0px, rgba(255,255,255,.015) 1px, transparent 1px, transparent 6px);
+}
+
+.f1-tag{
+  display:inline-flex;
+  align-items:center;
+  transform:skewX(-12deg);
+  background:var(--accent);
+  color:#fff;
+  padding:4px 12px;
+  border-radius:2px;
+}
+.f1-tag span{display:inline-block; transform:skewX(12deg); font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.8px; text-transform:uppercase; font-weight:700;}
+.f1-tag.tag-dark{background:var(--ink);}
+.f1-tag.tag-dark span{color:var(--bg);}
+.f1-tag.tag-outline{background:transparent; border:1.5px solid var(--accent);}
+.f1-tag.tag-outline span{color:var(--accent);}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px clamp(20px,6vw,72px);
+  border-bottom:2px solid var(--accent);
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(10px);
+  flex-wrap:wrap;
+  gap:14px;
+}
+.brand{display:flex; align-items:center; gap:10px;}
+.brand .mark{width:32px; height:32px; flex-shrink:0;}
+.logo{font-family:'Barlow Condensed',sans-serif; font-size:19px; font-weight:700; letter-spacing:.3px; text-transform:uppercase; color:var(--ink);}
+.logo .accent-dot{color:var(--accent);}
+nav{display:flex; align-items:center; gap:24px;}
+nav a{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:14.5px;
+  letter-spacing:.4px;
+  text-transform:uppercase;
+  color:var(--muted);
+  text-decoration:none;
+  font-weight:600;
+  padding-bottom:2px;
+  border-bottom:2px solid transparent;
+}
+nav a:hover{color:var(--ink); border-bottom-color:var(--accent);}
+nav a.current{color:var(--ink); border-bottom-color:var(--accent);}
+.header-right{display:flex; align-items:center; gap:12px;}
+.chrome-btn{display:flex; align-items:center; gap:7px; background:var(--ink); color:#fff; text-decoration:none; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:13.5px; text-transform:uppercase; letter-spacing:.3px; padding:8px 14px; border-radius:4px; transition:background .15s ease;}
+.chrome-btn:hover{background:var(--accent);}
+.counter{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:8px; background:var(--bg-panel); padding:6px 12px; border:1px solid var(--hairline);}
+.counter .mono{color:var(--ink); font-weight:700; font-variant-numeric:tabular-nums;}
+.counter .live-square{width:7px; height:7px; background:var(--accent); flex-shrink:0; animation:blink 1.6s step-start infinite;}
+@keyframes blink{50%{opacity:.25;}}
+
+.nav-toggle{display:none; background:none; border:none; cursor:pointer; padding:6px; flex-direction:column; gap:4px;}
+.nav-toggle span{width:20px; height:2px; background:var(--ink); transition:transform .2s ease, opacity .2s ease;}
+.nav-toggle.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.nav-toggle.open span:nth-child(2){opacity:0;}
+.nav-toggle.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+
+.page-hero{padding:8vh clamp(20px,6vw,72px) 6vh; max-width:1160px; margin:0 auto;}
+.page-hero .vin-line{font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:1.5px; color:var(--muted); margin-bottom:14px; display:flex; align-items:center; gap:10px;}
+.page-hero .vin-line:before{content:''; width:26px; height:1.5px; background:var(--accent);}
+.page-hero h1{font-family:'Barlow Condensed',sans-serif; text-transform:uppercase; font-size:clamp(2.4rem,5vw,3.6rem); line-height:0.98; font-weight:800; margin:0 0 16px;}
+.page-hero p.sub{font-size:1.02rem; color:var(--muted); max-width:560px; line-height:1.6; margin:0;}
+
+.compound-note{font-size:.82rem; color:var(--muted); line-height:1.55; max-width:420px; margin-top:4px; padding:12px 14px; background:var(--bg-panel); border-left:3px solid var(--accent); border-radius:2px;}
+.compound-note a{color:var(--accent); font-weight:600; text-decoration:none;}
+.compound-note a:hover{text-decoration:underline;}
+
+.services-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(210px,1fr)); gap:16px;}
+.service-tile{display:block; background:var(--card); border:1.5px solid var(--hairline); border-radius:var(--radius); padding:22px 20px; text-decoration:none; transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;}
+.service-tile svg{width:32px; height:32px; margin-bottom:14px; display:block;}
+.service-tile:hover{transform:translate(-3px,-3px); box-shadow:5px 5px 0 var(--accent); border-color:var(--accent);}
+.service-title{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.15rem; text-transform:uppercase; color:var(--ink); margin-bottom:4px;}
+.service-desc{font-size:.82rem; color:var(--muted); line-height:1.4; margin-bottom:14px;}
+.service-stat{font-size:.72rem; color:var(--accent); font-weight:600; letter-spacing:.3px;}
+
+.hero{padding:6vh clamp(20px,6vw,72px) 7vh; max-width:1160px; margin:0 auto; position:relative;}
+.vin-line{font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:1.5px; color:var(--muted); margin-bottom:14px; display:flex; align-items:center; gap:10px;}
+.vin-line:before{content:''; width:26px; height:1.5px; background:var(--accent);}
+.hero-grid{display:grid; grid-template-columns:1.05fr 0.95fr; gap:48px; align-items:start; position:relative; z-index:1;}
+.hero h1{
+  font-family:'Barlow Condensed',sans-serif;
+  text-transform:uppercase;
+  font-size:clamp(2.6rem,5vw,4rem);
+  line-height:0.98;
+  font-weight:800;
+  margin:0 0 18px;
+  letter-spacing:-0.01em;
+}
+.hero h1 .it{color:var(--accent); font-style:normal;}
+.hero p.sub{font-size:1.02rem; color:var(--muted); max-width:440px; line-height:1.6; margin:0 0 22px;}
+
+.live-ping{display:flex; align-items:center; gap:9px; font-size:.82rem; color:var(--muted); min-height:18px; font-family:'IBM Plex Mono',monospace;}
+.live-dot{width:7px; height:7px; background:var(--accent); flex-shrink:0;}
+.live-ping span.hl{color:var(--ink); font-weight:700;}
+
+.gauge-wrap{display:flex; justify-content:center; margin-top:8px;}
+.gauge-wrap svg{width:100%; max-width:230px; height:auto;}
+
+.form-panel{background:var(--card); border:1.5px solid var(--hairline); border-radius:var(--radius); padding:30px; box-shadow:6px 6px 0 var(--accent);}
+.form-eyebrow{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:1.6px; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:18px; display:flex; align-items:center; justify-content:space-between;}
+.field{margin-bottom:16px;}
+.field label{display:block; font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.6px; text-transform:uppercase; color:var(--muted); margin-bottom:7px;}
+.field-row{display:flex; gap:12px;}
+.field-row .field{flex:1;}
+input, textarea, select{width:100%; padding:10px 12px; border:1.5px solid var(--hairline); border-radius:4px; background:var(--bg); color:var(--ink); font-family:'Inter',sans-serif; font-size:0.95rem;}
+select{cursor:pointer;}
+textarea{resize:vertical; min-height:56px; line-height:1.5;}
+input::placeholder, textarea::placeholder{color:#9A9CA3;}
+input:focus, textarea:focus, select:focus{outline:none; border-color:var(--accent);}
+.submit-btn{width:100%; margin-top:8px; padding:14px; border:2px solid var(--ink); border-radius:4px; background:var(--accent); color:#fff; font-family:'Barlow Condensed',sans-serif; text-transform:uppercase; letter-spacing:.8px; font-size:1rem; font-weight:700; cursor:pointer; box-shadow:4px 4px 0 var(--ink); transition:transform .12s ease, box-shadow .12s ease;}
+.submit-btn:hover{transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--ink);}
+.submit-btn:active{transform:translate(0,0); box-shadow:2px 2px 0 var(--ink);}
+.form-msg{font-size:.8rem; margin-top:12px; color:var(--muted); min-height:16px;}
+.data-disclosure{font-size:.74rem; color:var(--muted); margin-top:14px; line-height:1.5; border-top:1px solid var(--hairline); padding-top:14px;}
+.data-disclosure a{color:var(--accent); font-weight:600; text-decoration:none;}
+.data-disclosure a:hover{text-decoration:underline;}
+
+section.pad{padding:7vh clamp(20px,6vw,72px);}
+.section-inner{max-width:1160px; margin:0 auto;}
+.section-head{display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:32px; flex-wrap:wrap; gap:10px; border-bottom:2px solid var(--hairline); padding-bottom:16px;}
+.section-num{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--accent); font-weight:700; letter-spacing:1px; display:block; margin-bottom:6px;}
+.section-head h2{font-family:'Barlow Condensed',sans-serif; text-transform:uppercase; font-size:clamp(1.5rem,2.6vw,2.1rem); font-weight:800; margin:0; letter-spacing:.2px; color:var(--ink);}
+.section-head p{margin:0; color:var(--muted); font-size:.88rem; max-width:300px;}
+.example-note{font-family:'IBM Plex Mono',monospace; font-size:.74rem; color:var(--muted); margin:-20px 0 24px;}
+
+.feed{display:grid; grid-template-columns:repeat(auto-fill, minmax(270px,1fr)); gap:20px;}
+.entry{background:var(--card); border:1.5px solid var(--hairline); border-radius:var(--radius); overflow:hidden; transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease; position:relative;}
+.entry:hover{transform:translate(-3px,-3px); box-shadow:5px 5px 0 var(--accent); border-color:var(--accent);}
+.entry-photo{position:relative; height:120px; display:flex; align-items:center; justify-content:center; border-bottom:1.5px solid var(--hairline);}
+.entry-photo svg{width:86px; height:auto; position:relative; z-index:1;}
+.type-pill{position:absolute; top:10px; left:10px; z-index:2;}
+.tag-example-badge{position:absolute; top:10px; right:10px; z-index:2;}
+.entry-body{padding:18px 20px 20px;}
+.entry .make{font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent); font-weight:700;}
+.entry .model{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.35rem; margin:3px 0 10px; text-transform:uppercase; color:var(--ink);}
+.entry .reason{font-size:.9rem; color:#3A3B40; line-height:1.55;}
+.entry .meta{display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:var(--muted); margin-top:14px; padding-top:12px; border-top:1px solid var(--hairline);}
+
+.empty-feed{grid-column:1/-1; color:var(--muted); font-size:.9rem; padding:40px; text-align:center; background:var(--card); border:1.5px solid var(--hairline); border-radius:var(--radius);}
+
+.filter-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px;}
+.filter-pill{border:1.5px solid var(--hairline); background:var(--card); color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:.76rem; letter-spacing:.4px; text-transform:uppercase; font-weight:600; padding:8px 14px; border-radius:3px; cursor:pointer; transition:all .12s ease; display:flex; align-items:center; gap:8px;}
+.filter-pill .dot{width:7px; height:7px; border-radius:50%;}
+.filter-pill:hover{border-color:var(--accent); color:var(--ink);}
+.filter-pill.active{background:var(--accent); border-color:var(--accent); color:#fff;}
+
+.board-card{background:var(--card); border:1.5px solid var(--hairline); border-radius:var(--radius); overflow:hidden;}
+.board-card-head{display:grid; grid-template-columns:32px 14px 1fr 130px 76px; gap:16px; align-items:center; padding:10px 16px; background:var(--accent); font-family:'IBM Plex Mono',monospace; font-size:.68rem; letter-spacing:.8px; text-transform:uppercase; color:#fff; font-weight:700;}
+.board-card-head span:nth-child(1){display:none;}
+.board-card-head span:nth-child(2){display:none;}
+.board-row{display:grid; grid-template-columns:32px 14px 1fr 130px 76px; gap:16px; align-items:center; padding:13px 16px; border-top:1px solid var(--hairline); transition:background .12s ease;}
+.board-row:nth-child(even){background:var(--bg-panel);}
+.board-row:hover{background:#EDF1FF;}
+.rank{font-family:'IBM Plex Mono',monospace; color:var(--muted); font-size:.8rem; font-weight:700;}
+.board-type-dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+.board-name{font-family:'Barlow Condensed',sans-serif; font-size:1.05rem; font-weight:700; text-transform:uppercase; color:var(--ink);}
+.bar-track{height:6px; background:var(--hairline); overflow:hidden;}
+.bar-fill{height:100%; transition:width .6s cubic-bezier(.2,.8,.2,1); background:var(--accent);}
+.board-count{font-family:'IBM Plex Mono',monospace; color:var(--muted); text-align:right; font-size:.78rem;}
+.empty-board{color:var(--muted); font-size:.9rem; padding:30px 16px; text-align:center;}
+
+.similar-panel{background:var(--card); border:1.5px solid var(--hairline); border-radius:var(--radius); padding:30px;}
+.similar-search{display:flex; gap:12px; flex-wrap:wrap;}
+.similar-search input{flex:1; min-width:220px; border:1.5px solid var(--hairline); border-radius:4px; padding:12px 16px; font-size:.95rem;}
+.similar-search input:focus{outline:none; border-color:var(--accent);}
+.similar-hint{font-family:'IBM Plex Mono',monospace; font-size:.78rem; color:var(--muted); margin-top:14px;}
+.similar-results{display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:16px; margin-top:22px;}
+.similar-results:empty{margin-top:0;}
+.sim-card{border:1.5px solid var(--hairline); border-radius:4px; overflow:hidden;}
+.sim-photo{height:70px; display:flex; align-items:center; justify-content:center; position:relative; border-bottom:1.5px solid var(--hairline);}
+.sim-photo svg{width:56px; height:auto;}
+.sim-body{padding:14px 16px 16px;}
+.sim-body .make{font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:1px; text-transform:uppercase; color:var(--accent); font-weight:700;}
+.sim-body .model{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.08rem; margin:2px 0 6px; text-transform:uppercase; color:var(--ink);}
+.sim-why{font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--muted); background:var(--bg-panel); display:inline-block; padding:3px 9px; border-radius:2px;}
+
+/* poll */
+.poll-card{background:var(--card); border:1.5px solid var(--hairline); border-radius:var(--radius); padding:28px; max-width:640px;}
+.poll-question{font-family:'Barlow Condensed',sans-serif; font-size:1.3rem; font-weight:700; color:var(--ink); margin-bottom:20px;}
+.poll-options{display:flex; flex-direction:column; gap:10px;}
+.poll-option{border:1.5px solid var(--hairline); border-radius:4px; padding:0; cursor:pointer; background:none; position:relative; overflow:hidden; text-align:left; transition:border-color .12s ease; width:100%;}
+.poll-option:hover{border-color:var(--accent);}
+.poll-option.voted{cursor:default;}
+.poll-option-fill{position:absolute; top:0; left:0; bottom:0; background:var(--bg-panel); z-index:0; transition:width .5s ease;}
+.poll-option-content{position:relative; z-index:1; display:flex; justify-content:space-between; padding:12px 16px; font-size:.92rem; color:var(--ink);}
+.poll-option-pct{font-family:'IBM Plex Mono',monospace; color:var(--accent); font-weight:700; font-size:.85rem;}
+.poll-footer{margin-top:16px; font-family:'IBM Plex Mono',monospace; font-size:.76rem; color:var(--muted);}
+
+/* video */
+.video-card{background:var(--card); border:1.5px solid var(--hairline); border-radius:var(--radius); padding:28px; max-width:760px;}
+.video-intro p{color:#3A3B40; font-size:.95rem; line-height:1.65; margin:0 0 18px;}
+.video-frame-wrap{border:1.5px solid var(--ink); border-radius:4px; overflow:hidden;}
+.video-frame-bar{display:flex; justify-content:space-between; align-items:center; padding:10px 16px; background:var(--ink); color:#fff; font-family:'IBM Plex Mono',monospace; font-size:.78rem;}
+.video-end-btn{border:1.5px solid #fff; background:none; color:#fff; font-family:'Barlow Condensed',sans-serif; text-transform:uppercase; letter-spacing:.4px; font-weight:700; font-size:.78rem; padding:5px 14px; border-radius:3px; cursor:pointer;}
+.video-end-btn:hover{background:rgba(255,255,255,.15);}
+#video-frame-container{width:100%; height:480px; background:#000;}
+#video-frame-container iframe{width:100%; height:100%; border:none; display:block;}
+
+/* competition */
+.comp-card{background:var(--card); border:1.5px solid var(--hairline); border-radius:var(--radius); padding:28px; max-width:760px;}
+.comp-prompt{display:flex; flex-direction:column; gap:6px; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid var(--hairline);}
+.comp-prompt strong{font-family:'Barlow Condensed',sans-serif; font-size:1.25rem; font-weight:700; color:var(--ink); text-transform:uppercase;}
+.comp-prompt span{color:var(--muted); font-size:.88rem; line-height:1.5;}
+.comp-form{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px;}
+.comp-form input{flex:1; min-width:160px; border:1.5px solid var(--hairline); border-radius:4px; padding:11px 14px; font-size:.9rem;}
+.comp-form input:focus{outline:none; border-color:var(--accent);}
+.comp-leaderboard{display:flex; flex-direction:column; gap:10px;}
+.comp-entry-row{display:flex; align-items:center; gap:14px; padding:12px 14px; border:1px solid var(--hairline); border-radius:4px; background:var(--bg-panel);}
+.comp-entry-row .comp-rank{font-family:'IBM Plex Mono',monospace; color:var(--accent); font-weight:700; font-size:.85rem; width:22px; flex-shrink:0;}
+.comp-entry-row .comp-body{flex:1;}
+.comp-entry-row .comp-entry-name{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:.92rem; text-transform:uppercase; color:var(--ink);}
+.comp-entry-row .comp-entry-text{font-size:.88rem; color:#3A3B40; margin-top:2px;}
+.comp-vote-btn{border:1.5px solid var(--accent); background:#fff; color:var(--accent); font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:.8rem; padding:6px 12px; border-radius:20px; cursor:pointer; flex-shrink:0; transition:background .12s ease, color .12s ease;}
+.comp-vote-btn:hover{background:var(--accent); color:#fff;}
+.comp-empty{color:var(--muted); font-size:.88rem; text-align:center; padding:20px;}
+
+.forum-stats{display:flex; align-items:center; gap:40px; flex-wrap:wrap; background:var(--card); border:1.5px solid var(--hairline); border-radius:var(--radius); padding:24px 28px; margin-bottom:0;}
+.forum-stat{text-align:left;}
+.forum-stat-num{font-size:2rem; font-weight:700; color:var(--accent); line-height:1;}
+.forum-stat-label{font-size:.76rem; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:.5px;}
+.forum-stat-copy{flex:1; min-width:260px; font-size:.9rem; color:#3A3B40; line-height:1.55;}
+.forum-stat-copy a{color:var(--accent); font-weight:600; text-decoration:none;}
+.forum-stat-copy a:hover{text-decoration:underline;}
+
+.forum-panel{display:grid; grid-template-columns:250px 1fr; gap:0; border:1.5px solid var(--hairline); border-radius:var(--radius); overflow:hidden; background:var(--card); box-shadow:0 4px 20px rgba(20,107,58,.06);}
+.forum-rooms{display:flex; flex-direction:column; border-right:1.5px solid var(--hairline); background:var(--bg-panel);}
+.forum-room-btn{all:unset; box-sizing:border-box; cursor:pointer; padding:18px 20px; border-bottom:1px solid var(--hairline); display:flex; flex-direction:column; gap:4px;}
+.forum-room-btn .frb-top{display:flex; justify-content:space-between; align-items:center; gap:8px; width:100%;}
+.forum-room-btn .frb-label{font-family:'Barlow Condensed',sans-serif; font-size:1.05rem; font-weight:700; text-transform:uppercase; color:var(--ink);}
+.forum-room-btn .frb-desc{font-size:.76rem; color:var(--muted); line-height:1.4;}
+.forum-room-count{font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--muted); background:var(--card); border:1px solid var(--hairline); padding:2px 7px; border-radius:20px; flex-shrink:0;}
+.forum-room-btn:hover{background:var(--card);}
+.forum-room-btn.active{background:var(--accent);}
+.forum-room-btn.active .frb-label, .forum-room-btn.active .frb-desc{color:#fff;}
+.forum-room-btn.active .forum-room-count{background:rgba(255,255,255,.2); border-color:rgba(255,255,255,.4); color:#fff;}
+
+.forum-window{display:flex; flex-direction:column; min-height:640px;}
+.forum-window-head{padding:20px 26px; border-bottom:1.5px solid var(--hairline); background:var(--card);}
+.forum-window-title{font-family:'Barlow Condensed',sans-serif; font-size:1.4rem; font-weight:700; text-transform:uppercase; color:var(--ink);}
+.forum-window-sub{font-size:.82rem; color:var(--muted); margin-top:2px;}
+.forum-messages{flex:1; overflow-y:auto; max-height:600px; padding:26px 28px; display:flex; flex-direction:column; gap:22px; background:var(--bg-panel);}
+.forum-msg{display:flex; gap:14px; max-width:78%;}
+.forum-msg .fm-avatar{width:40px; height:40px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.05rem; flex-shrink:0;}
+.forum-msg.fm-example .fm-avatar{background:var(--hairline); color:var(--muted);}
+.forum-msg .fm-body{flex:1;}
+.forum-msg .fm-head{display:flex; gap:10px; align-items:baseline; margin-bottom:6px;}
+.forum-msg .fm-name{font-family:'Barlow Condensed',sans-serif; font-weight:700; text-transform:uppercase; font-size:.98rem; color:var(--ink);}
+.forum-msg .fm-time{font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--muted);}
+.forum-msg .fm-text{font-size:1rem; color:#2C2D31; line-height:1.55; background:var(--card); display:inline-block; padding:14px 18px; border-radius:4px; border:1px solid var(--hairline);}
+.forum-msg.fm-example .fm-text{border-style:dashed;}
+.forum-empty{color:var(--muted); font-size:.9rem; text-align:center; padding:60px 20px;}
+.forum-input-row{display:flex; gap:12px; border-top:1.5px solid var(--hairline); padding:20px 26px; background:var(--card);}
+.forum-input-row input{border:1.5px solid var(--hairline); border-radius:4px; padding:14px 16px; font-size:1rem;}
+.forum-input-row input:focus{outline:none; border-color:var(--accent);}
+.forum-send-btn{border:2px solid var(--ink); background:var(--accent); color:#fff; font-family:'Barlow Condensed',sans-serif; text-transform:uppercase; letter-spacing:.5px; font-weight:700; font-size:1rem; padding:0 30px; border-radius:4px; cursor:pointer; box-shadow:3px 3px 0 var(--ink); transition:transform .12s ease, box-shadow .12s ease;}
+.forum-send-btn:hover{transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--ink);}
+
+.about-grid{display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start;}
+.about-grid p{color:#3A3B40; line-height:1.75; font-size:.98rem; margin:0 0 16px;}
+.value-list{list-style:none; margin:0; padding:0;}
+.value-list li{padding:20px 0; border-top:1px solid var(--hairline); display:flex; gap:18px; align-items:flex-start;}
+.value-list li:first-child{border-top:none;}
+.value-list .vicon{width:40px; height:40px; flex-shrink:0;}
+.value-list h4{margin:0 0 4px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.1rem; text-transform:uppercase; color:var(--ink);}
+.value-list span{color:var(--muted); font-size:.88rem; line-height:1.55;}
+
+.blog-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:22px;}
+.post{background:var(--card); border:1.5px solid var(--hairline); border-radius:var(--radius); overflow:hidden; display:flex; flex-direction:column; transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;}
+.post:hover{transform:translate(-3px,-3px); box-shadow:5px 5px 0 var(--accent); border-color:var(--accent);}
+.post-icon{height:90px; display:flex; align-items:center; justify-content:center; border-bottom:1.5px solid var(--hairline); background:var(--bg-panel);}
+.post-icon svg{width:52px; height:52px;}
+.post-body{padding:22px 24px 24px; display:flex; flex-direction:column; flex:1;}
+.post .tag{font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent); font-weight:700;}
+.post h3{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.4rem; margin:8px 0 10px; text-transform:uppercase; line-height:1.1; color:var(--ink);}
+.post .excerpt{color:#3A3B40; font-size:.9rem; line-height:1.6; margin-bottom:14px;}
+.post details summary{cursor:pointer; font-family:'IBM Plex Mono',monospace; font-size:.78rem; font-weight:700; color:var(--accent); list-style:none; text-transform:uppercase; letter-spacing:.4px;}
+.post details summary::-webkit-details-marker{display:none;}
+.post details summary:after{content:" — read more";}
+.post details[open] summary:after{content:" — show less";}
+.post details .full{margin-top:12px; color:#3A3B40; font-size:.88rem; line-height:1.65;}
+.post .meta{margin-top:auto; padding-top:14px; border-top:1px solid var(--hairline); font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--muted); display:flex; justify-content:space-between;}
+.news-post{justify-content:flex-start;}
+.news-link{margin-top:auto; padding-top:16px; font-family:'IBM Plex Mono',monospace; font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--accent); text-decoration:none;}
+.news-link:hover{text-decoration:underline;}
+
+.partners-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:start; margin-bottom:32px;}
+.partners-copy p{color:#3A3B40; line-height:1.75; font-size:.98rem; margin:0 0 16px;}
+.partners-points{display:flex; flex-direction:column; gap:16px; margin-top:24px;}
+.partners-points div{display:flex; flex-direction:column; gap:3px;}
+.partners-points strong{font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.05rem; text-transform:uppercase; color:var(--ink);}
+.partners-points span{color:var(--muted); font-size:.86rem; line-height:1.5;}
+
+.insight-card{background:var(--card); border:1.5px solid var(--hairline); border-radius:var(--radius); padding:26px; box-shadow:6px 6px 0 var(--accent);}
+.insight-eyebrow{font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:18px; display:flex; align-items:center; gap:8px;}
+.insight-stat{margin-bottom:18px;}
+.insight-num{font-family:'IBM Plex Mono',monospace; font-size:2.3rem; font-weight:700; color:var(--ink); line-height:1;}
+.insight-label{font-size:.8rem; color:var(--muted); margin-top:4px;}
+.insight-row{display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-top:1px solid var(--hairline); font-size:.88rem;}
+.insight-row strong{font-family:'Barlow Condensed',sans-serif; font-weight:700; text-transform:uppercase; color:var(--ink);}
+.insight-themes{padding-top:14px; border-top:1px solid var(--hairline); margin-top:4px;}
+.insight-themes > span{font-size:.76rem; color:var(--muted); display:block; margin-bottom:10px;}
+.theme-pills{display:flex; flex-wrap:wrap; gap:8px;}
+.theme-pill{background:var(--bg-panel); border:1px solid var(--hairline); color:var(--ink); font-family:'IBM Plex Mono',monospace; font-size:.74rem; font-weight:600; padding:5px 10px; border-radius:2px;}
+
+.lead-card{background:var(--card); border:1.5px solid var(--accent); border-radius:var(--radius); padding:30px; display:flex; align-items:center; gap:32px; flex-wrap:wrap;}
+.lead-copy{flex:1; min-width:220px;}
+.lead-copy h3{margin:0 0 6px; font-family:'Barlow Condensed',sans-serif; font-size:1.3rem; font-weight:700; text-transform:uppercase; color:var(--ink);}
+.lead-copy p{margin:0; color:var(--muted); font-size:.9rem;}
+.lead-form{flex:1.4; min-width:280px; display:flex; flex-wrap:wrap; gap:10px;}
+.lead-form input, .lead-form select{flex:1; min-width:150px; border:1.5px solid var(--hairline); border-radius:4px; padding:11px 13px; font-size:.88rem; background:var(--bg-panel); color:var(--ink);}
+.lead-form input::placeholder{color:#9A9CA3;}
+.lead-form input:focus, .lead-form select:focus{outline:none; border-color:var(--accent-2);}
+.lead-note{width:100%; font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--muted); margin-top:2px;}
+
+.ext-grid{display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center;}
+.ext-copy p{color:#3A3B40; line-height:1.75; font-size:.98rem;}
+.ext-cta{display:inline-flex; align-items:center; gap:10px; background:var(--accent); color:#fff; padding:13px 24px; border:2px solid var(--ink); border-radius:4px; text-decoration:none; font-family:'Barlow Condensed',sans-serif; text-transform:uppercase; letter-spacing:.6px; font-size:.98rem; font-weight:700; margin-top:10px; box-shadow:4px 4px 0 var(--ink); transition:transform .12s ease, box-shadow .12s ease;}
+.ext-cta:hover{transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--ink);}
+.ext-note{font-family:'IBM Plex Mono',monospace; font-size:.76rem; color:var(--muted); margin-top:14px;}
+
+.browser-mock{background:var(--card); border:1.5px solid var(--hairline); border-radius:var(--radius); overflow:hidden;}
+.browser-bar{display:flex; align-items:center; gap:6px; padding:10px 14px; background:var(--bg-panel); border-bottom:1.5px solid var(--hairline);}
+.browser-bar span{width:8px; height:8px; border-radius:50%; background:var(--hairline);}
+.browser-url{margin-left:10px; font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--muted); background:var(--bg); border:1px solid var(--hairline); border-radius:3px; padding:3px 10px; flex:1;}
+.browser-body{position:relative; height:210px; background:var(--bg-panel); padding:18px;}
+.browser-body .fake-line{height:8px; background:var(--hairline); border-radius:2px; margin-bottom:11px;}
+.browser-body .fake-line.w60{width:60%;}
+.browser-body .fake-line.w40{width:40%;}
+.browser-body .fake-line.w80{width:80%;}
+.mock-widget{position:absolute; bottom:16px; right:16px; width:190px; background:var(--card); border:1.5px solid var(--hairline); border-radius:4px; overflow:hidden; animation:mockIn .5s ease .3s both;}
+@keyframes mockIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+.mock-widget .mw-head{background:var(--accent); color:#fff; font-family:'IBM Plex Mono',monospace; font-size:9px; font-weight:700; padding:6px 10px; letter-spacing:.5px;}
+.mock-widget .mw-body{padding:11px 12px;}
+.mock-widget .mw-count{font-size:11px; margin-bottom:7px; color:var(--ink);}
+.mock-widget .mw-count strong{color:var(--accent);}
+.mock-widget .mw-line{height:6px; background:var(--hairline); border-radius:2px; margin-bottom:5px;}
+.mock-widget .mw-line.w70{width:70%;}
+.mock-widget .mw-line.w50{width:50%;}
+
+.reveal{opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease;}
+.reveal.in{opacity:1; transform:translateY(0);}
+
+footer{padding:5vh clamp(20px,6vw,72px) 4vh; color:var(--muted); font-size:.85rem; background:var(--bg-panel); border-top:1px solid var(--hairline);}
+.footer-grid{max-width:1160px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:32px;}
+.footer-brand{display:flex; align-items:center; gap:9px; color:var(--ink); font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1rem; text-transform:uppercase; margin-bottom:8px;}
+.footer-brand .mark{width:22px; height:22px;}
+.footer-tagline{max-width:280px; line-height:1.55; font-size:.85rem;}
+.footer-links{display:flex; gap:48px; flex-wrap:wrap;}
+.footer-col h5{margin:0 0 12px; font-family:'IBM Plex Mono',monospace; font-size:.7rem; letter-spacing:1.2px; text-transform:uppercase; color:var(--ink);}
+.footer-col a{display:block; color:var(--muted); text-decoration:none; font-size:.85rem; margin-bottom:8px; transition:color .15s ease;}
+.footer-col a:hover{color:var(--accent-2);}
+.footer-bottom{max-width:1160px; margin:32px auto 0; padding-top:20px; border-top:1px solid var(--hairline); font-family:'IBM Plex Mono',monospace; font-size:.72rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+@media (max-width:860px){
+  .hero-grid, .about-grid, .ext-grid, .partners-grid{grid-template-columns:1fr;}
+  .field-row{flex-direction:column; gap:0;}
+  .nav-toggle{display:flex;}
+  nav{
+    display:none;
+    order:4;
+    width:100%;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:16px;
+    padding-top:8px;
+  }
+  nav.open{display:flex;}
+  .forum-panel{grid-template-columns:1fr;}
+  .forum-rooms{flex-direction:row; overflow-x:auto; border-right:none; border-bottom:1.5px solid var(--hairline);}
+  .forum-room-btn{border-bottom:none; border-right:1px solid var(--hairline); white-space:nowrap; min-width:170px;}
+  .forum-window{min-height:480px;}
+  .forum-messages{max-height:440px;}
+  .forum-stats{flex-direction:column; align-items:flex-start; gap:16px;}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  .submit-btn{transition:none;}
+  .reveal{opacity:1; transform:none; transition:none;}
+  .counter .live-square{animation:none;}
+}
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // TODO: replace with your own Supabase project URL + public anon key
+  // (Dashboard -> Project Settings -> API). See SUPABASE_SCHEMA.md.
+  window.wcdydSupabase = window.supabase.createClient(
+    'https://shlgdzmxjasklxjgokko.supabase.co',
+    'sb_publishable_XxGl757I3QvaZhj0-yDy6A_LHIkDUGh'
+  );
+
+  // Unique visitor tracking — one row per distinct browser, ever.
+  // Silently no-ops if this browser has already been counted.
+  (function(){
+    try{
+      let vid = localStorage.getItem('wcdyd_voter_id');
+      if(!vid){
+        vid = crypto.randomUUID();
+        localStorage.setItem('wcdyd_voter_id', vid);
+      }
+      window.wcdydSupabase
+        .from('site_visitors')
+        .insert({ visitor_id: vid })
+        .then(({ error }) => {
+          if(error && error.code !== '23505'){
+            console.error('Could not record visitor', error);
+          }
+        });
+    }catch(e){
+      console.error('Visitor tracking failed', e);
+    }
+  })();
+</script>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="100" height="100" rx="24" fill="#146B3A"/>
+      <polyline points="26,36 39.5,64.5 50,37.5 60.5,64.5 74,36" fill="none" stroke="#FAFAF9" stroke-width="8.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="50" cy="37.5" r="5" fill="#4CA771"/>
+    </svg>
+    <div class="logo">whatcardoyoudrive<span class="accent-dot">.</span>com</div>
+  </div>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <nav id="nav-menu">
+    <a href="index.html" class="current">Home</a>
+    <a href="forum.html">Talk Cars</a>
+    <a href="about.html">About</a>
+    <a href="blog.html">Blog</a>
+    <a href="index.html#news">News</a>
+    <a href="index.html#partners">For Car Companies</a>
+  </nav>
+  <div class="header-right">
+    <a class="chrome-btn" href="#" title="Chrome Web Store link goes here once the extension is published">
+    <svg viewBox="0 0 24 24" width="15" height="15" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3.3" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="2" x2="12" y2="8.7" stroke="currentColor" stroke-width="1.6"/><line x1="4.2" y1="17" x2="9.8" y2="14" stroke="currentColor" stroke-width="1.6"/><line x1="19.8" y1="17" x2="14.2" y2="14" stroke="currentColor" stroke-width="1.6"/></svg>
+    Add to Chrome
+  </a>
+  <div class="counter"><span class="live-square"></span>registered <span class="mono" id="total-count">0</span></div>
+  </div>
+</header>
+<div class="hero" id="home">
+  <div class="hero-grid">
+    <div>
+      <div class="vin-line">REG. NO. 000000 &mdash; A PUBLIC RECORD</div>
+      <h1 class="serif">What do you drive.<br><span class="it">And why.</span></h1>
+      <p class="sub">A curated, growing record of what people drive and the real reasons behind it. No ratings, no stars, just the answer, in their own words. Yours included.</p>
+      <div class="live-ping"><span class="live-dot"></span><span id="live-ping-text">Waiting for the first entry…</span></div>
+      <div class="compound-note">Every entry, message, and post here adds to a dataset that only gets more valuable with time — see <a href="#partners">how it's used</a>.</div>
+      <div class="gauge-wrap">
+        <svg viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20,110 A90,90 0 0,1 200,110" fill="none" stroke="#E2E4E9" stroke-width="10"/>
+          <path d="M20,110 A90,90 0 0,1 140,26" fill="none" stroke="#146B3A" stroke-width="10"/>
+          <g stroke="#121214" stroke-width="2">
+            <line x1="20" y1="110" x2="30" y2="105"/>
+            <line x1="35" y1="55" x2="44" y2="60"/>
+            <line x1="80" y1="27" x2="83" y2="37"/>
+            <line x1="140" y1="26" x2="140" y2="36"/>
+            <line x1="195" y1="55" x2="186" y2="60"/>
+            <line x1="200" y1="110" x2="190" y2="105"/>
+          </g>
+          <line x1="110" y1="110" x2="150" y2="50" stroke="#121214" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="110" cy="110" r="8" fill="#121214"/>
+          <text x="110" y="126" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#666870">ENTRIES THIS WEEK</text>
+        </svg>
+      </div>
+    </div>
+
+    <form class="form-panel" id="plate-form">
+      <div class="form-eyebrow"><span>Join the record</span><span>FORM 01</span></div>
+      <div class="field-row">
+        <div class="field">
+          <label for="input-make">Make</label>
+          <input type="text" id="input-make" placeholder="Porsche" required>
+        </div>
+        <div class="field">
+          <label for="input-model">Model</label>
+          <input type="text" id="input-model" placeholder="911" required>
+        </div>
+        <div class="field" style="flex:0.6;">
+          <label for="input-year">Year</label>
+          <input type="text" id="input-year" placeholder="2024" maxlength="4">
+        </div>
+      </div>
+      <div class="field">
+        <label for="input-bodytype">Body type</label>
+        <select id="input-bodytype" required>
+          <option value="" disabled selected>Select a type</option>
+          <option value="sedan">Sedan</option>
+          <option value="suv">SUV</option>
+          <option value="coupe">Coupe</option>
+          <option value="convertible">Convertible</option>
+          <option value="truck">Truck</option>
+          <option value="hatchback">Hatchback</option>
+          <option value="wagon">Wagon</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="input-reason">Why this car?</label>
+        <textarea id="input-reason" placeholder="What made you choose it over the alternatives?" required></textarea>
+      </div>
+      <div class="field">
+        <label for="input-name">Name or handle (optional)</label>
+        <input type="text" id="input-name" placeholder="Anonymous">
+      </div>
+      <button type="submit" class="submit-btn">Join the record</button>
+      <div class="form-msg" id="form-msg"></div>
+      <div class="data-disclosure">Your entry is public on this site, the same as everything else here. Aggregated, anonymized trends from the record may also be licensed to automotive partners — never individual entries, never sold privately. <a href="#partners">Learn more</a>.</div>
+    </form>
+  </div>
+</div>
+
+<div class="checker-strip"></div>
+
+<section class="pad" style="padding-bottom:2vh;">
+  <div class="section-inner">
+    <div class="section-head">
+      <div><span class="section-num">EXPLORE</span><h2 class="serif">Everything feeds the record</h2></div>
+      <p>Six places to contribute. One growing dataset.</p>
+    </div>
+    <div class="services-grid">
+      <a class="service-tile" href="#feed-section">
+        <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="24" height="4" rx="2" fill="#146B3A"/><rect x="8" y="18" width="24" height="4" rx="2" fill="#146B3A"/><rect x="8" y="28" width="16" height="4" rx="2" fill="#146B3A"/></svg>
+        <div class="service-title">Latest Entries</div>
+        <div class="service-desc">Real submissions, live.</div>
+        <div class="service-stat mono" id="stat-entries">0 entries</div>
+      </a>
+      <a class="service-tile" href="#board-section">
+        <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="22" width="5" height="10" fill="#146B3A"/><rect x="17" y="16" width="5" height="16" fill="#146B3A"/><rect x="25" y="9" width="5" height="23" fill="#146B3A"/></svg>
+        <div class="service-title">Most Driven</div>
+        <div class="service-desc">Rankings by body type.</div>
+        <div class="service-stat mono" id="stat-models">0 models</div>
+      </a>
+      <a class="service-tile" href="forum.html">
+        <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M8,10 L32,10 L32,24 L20,24 L14,30 L14,24 L8,24 Z" fill="none" stroke="#146B3A" stroke-width="2.5" stroke-linejoin="round"/></svg>
+        <div class="service-title">Talk Cars</div>
+        <div class="service-desc">Six live discussion rooms.</div>
+        <div class="service-stat mono" id="stat-forum">0 messages</div>
+      </a>
+      <a class="service-tile" href="blog.html">
+        <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="7" width="22" height="26" rx="2" fill="none" stroke="#146B3A" stroke-width="2.5"/><line x1="14" y1="15" x2="26" y2="15" stroke="#146B3A" stroke-width="2"/><line x1="14" y1="21" x2="26" y2="21" stroke="#146B3A" stroke-width="2"/><line x1="14" y1="27" x2="21" y2="27" stroke="#146B3A" stroke-width="2"/></svg>
+        <div class="service-title">Blog</div>
+        <div class="service-desc">What the data is showing.</div>
+        <div class="service-stat mono">3 articles</div>
+      </a>
+      <a class="service-tile" href="#news">
+        <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="10" width="26" height="20" rx="2" fill="none" stroke="#146B3A" stroke-width="2.5"/><line x1="12" y1="16" x2="28" y2="16" stroke="#146B3A" stroke-width="2"/><line x1="12" y1="21" x2="22" y2="21" stroke="#146B3A" stroke-width="2"/></svg>
+        <div class="service-title">Car News</div>
+        <div class="service-desc">Industry headlines, weekly.</div>
+        <div class="service-stat mono">4 stories</div>
+      </a>
+      <a class="service-tile" href="#partners">
+        <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="15" width="24" height="16" rx="2" fill="none" stroke="#146B3A" stroke-width="2.5"/><path d="M15,15 V11 a2,2 0 0 1 2,-2 h6 a2,2 0 0 1 2,2 v4" fill="none" stroke="#146B3A" stroke-width="2.5"/></svg>
+        <div class="service-title">For Car Companies</div>
+        <div class="service-desc">Where the value compounds.</div>
+        <div class="service-stat mono">Licensing open</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="checker-strip"></div>
+
+<section class="pad" id="feed-section">
+  <div class="section-inner">
+    <div class="section-head">
+      <div><span class="section-num">01 — LIVE FEED</span><h2 class="serif">Latest entries</h2></div>
+      <p>Newest submissions, unfiltered.</p>
+    </div>
+    <div class="example-note" id="feed-example-note" style="display:none;">SHOWING EXAMPLE ENTRIES — ADD YOURS ABOVE TO BE THE FIRST REAL ONE.</div>
+    <div class="feed" id="feed"></div>
+  </div>
+</section>
+
+<section class="pad" id="board-section" style="background:var(--bg-panel);">
+  <div class="section-inner">
+    <div class="section-head">
+      <div><span class="section-num">02 — RANKINGS</span><h2 class="serif">Most driven</h2></div>
+      <p>Ranked by how often each model shows up in the record.</p>
+    </div>
+    <div class="example-note" id="board-example-note" style="display:none;">EXAMPLE RANKING, SHOWN UNTIL REAL ENTRIES START COMING IN.</div>
+    <div class="filter-row" id="filter-row"></div>
+    <div class="board-card">
+      <div class="board-card-head">
+        <span>Model</span><span>Share</span><span>Drivers</span>
+      </div>
+      <div id="board"></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad" id="news">
+  <div class="section-inner">
+    <div class="section-head">
+      <div><span class="section-num">03 — NEWS</span><h2 class="serif">Car news</h2></div>
+      <p>What's happening across the industry this week.</p>
+    </div>
+    <div class="blog-grid">
+      <article class="post news-post">
+        <div class="post-body">
+          <div class="tag">Sales</div>
+          <h3>Honda's CR-V overtakes the F-150 and RAV4</h3>
+          <p class="excerpt">Supply shortages at rivals have handed Honda the top sales spot for the first half of the year, an unusual shake-up in a ranking that's normally dominated by Ford and Toyota.</p>
+          <a href="https://www.autonews.com/" target="_blank" rel="noopener" class="news-link">Read on Automotive News →</a>
+        </div>
+      </article>
+
+      <article class="post news-post">
+        <div class="post-body">
+          <div class="tag">Pricing</div>
+          <h3>New car prices just hit an all-time high</h3>
+          <p class="excerpt">The average marketed price for a new vehicle has climbed past $51,900, breaking a record set back in 2023, with the increase hitting compact sedans hardest.</p>
+          <a href="https://carbuzz.com/record-high-car-prices-june-2026/" target="_blank" rel="noopener" class="news-link">Read on CarBuzz →</a>
+        </div>
+      </article>
+
+      <article class="post news-post">
+        <div class="post-body">
+          <div class="tag">New launch</div>
+          <h3>Nissan's new midsize SUV debuts this month</h3>
+          <p class="excerpt">The Tekton, Nissan's answer to the Renault Duster and a rival to the Hyundai Creta, is set for a global debut on July 9, with a three-row version planned.</p>
+          <a href="https://www.carlelo.com/news/8-new-cars-set-to-launch-in-july-2026" target="_blank" rel="noopener" class="news-link">Read on CarLelo →</a>
+        </div>
+      </article>
+
+      <article class="post news-post">
+        <div class="post-body">
+          <div class="tag">Deals</div>
+          <h3>EV lease deals are unusually generous this month</h3>
+          <p class="excerpt">Slower-selling electric models are carrying steep lease incentives right now, with the Hyundai Ioniq 9 leading the pack at $18,000 in lease cash as automakers work to move inventory.</p>
+          <a href="https://caredge.com/guides/best-and-worst-car-deals-july-2026" target="_blank" rel="noopener" class="news-link">Read on CarEdge →</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="checker-strip"></div>
+
+<section class="pad" id="similar" style="background:var(--bg-panel);">
+  <div class="section-inner">
+    <div class="section-head">
+      <div><span class="section-num">04 — RECOMMENDATIONS</span><h2 class="serif">Find similar cars</h2></div>
+      <p>The more people add, the sharper these get.</p>
+    </div>
+    <div class="similar-panel">
+      <div class="similar-search">
+        <input type="text" id="similar-input" placeholder="Try &quot;Porsche 911&quot; or &quot;Range Rover Sport&quot;">
+        <button id="similar-btn" class="submit-btn" style="width:auto; padding:12px 26px;">Find similar</button>
+      </div>
+      <div class="similar-hint" id="similar-hint">Matches by body type and by what people actually said about it, using every entry in the record.</div>
+      <div class="similar-results" id="similar-results"></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad" id="partners">
+  <div class="section-inner">
+    <div class="section-head">
+      <div><span class="section-num">05 — PARTNERS</span><h2 class="serif">For car companies</h2></div>
+      <p>The record, turned into something you can act on.</p>
+    </div>
+    <div class="partners-grid">
+      <div class="partners-copy">
+        <p>Every entry on this site is a real person explaining, in their own words, why they chose the car they drive. That's the part surveys and clinics struggle to get honestly, and it's happening here continuously, for free, at growing scale.</p>
+        <p>We turn that into aggregated, anonymized insight: which models are winning cross-shop decisions, what real owners say drove the choice, and how that shifts month to month by body type and segment. No individual entry is ever sold or shared privately, everything here is already public. What you'd license is the pattern across thousands of them.</p>
+        <div class="partners-points">
+          <div><strong>Trend reports</strong><span>Monthly reads on why specific models are winning or losing cross-shop decisions.</span></div>
+          <div><strong>Competitive reads</strong><span>What your owners say about you vs. named competitors, unprompted.</span></div>
+          <div><strong>Early signal</strong><span>Shifts in reasoning often show up here before they show up in sales data.</span></div>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-eyebrow">Live snapshot <span class="example-note" id="insight-example-tag" style="display:none; margin:0; font-size:.7rem;">(example data)</span></div>
+        <div class="insight-stat">
+          <div class="insight-num mono" id="insight-total">0</div>
+          <div class="insight-label">entries in the record right now</div>
+        </div>
+        <div class="insight-row">
+          <span>Leading body type</span>
+          <strong id="insight-top-type">—</strong>
+        </div>
+        <div class="insight-row">
+          <span>Most driven model</span>
+          <strong id="insight-top-model">—</strong>
+        </div>
+        <div class="insight-row">
+          <span>Unique visitors</span>
+          <strong id="insight-visitors">—</strong>
+        </div>
+        <div class="insight-themes">
+          <span>Trending in owners' own words</span>
+          <div class="theme-pills" id="insight-themes"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lead-card">
+      <div class="lead-copy">
+        <h3 class="serif">Get access to the full dataset</h3>
+        <p>Tell us who you are and what you need. We'll follow up directly.</p>
+      </div>
+      <form class="lead-form" id="lead-form">
+        <input type="text" id="lead-company" placeholder="Company name" required>
+        <input type="email" id="lead-email" placeholder="Work email" required>
+        <select id="lead-interest" required>
+          <option value="" disabled selected>What are you interested in?</option>
+          <option value="Trend reports">Monthly trend reports</option>
+          <option value="Competitive reads">Competitive reads</option>
+          <option value="API access">Full data / API access</option>
+          <option value="Custom research">Custom research</option>
+        </select>
+        <button type="submit" class="submit-btn" style="width:auto; padding:12px 26px;">Request access</button>
+      </form>
+      <div class="lead-note">Opens your email client with the details filled in — nothing is stored on this page.</div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">
+        <svg class="mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="100" height="100" rx="24" fill="#146B3A"/>
+      <polyline points="26,36 39.5,64.5 50,37.5 60.5,64.5 74,36" fill="none" stroke="#FAFAF9" stroke-width="8.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="50" cy="37.5" r="5" fill="#4CA771"/>
+    </svg>
+        whatcardoyoudrive.com
+      </div>
+      <p class="footer-tagline">A curated, growing record of what people drive and why. Public by default, free to add to.</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h5>Site</h5>
+        <a href="index.html">Home</a>
+        <a href="forum.html">Talk Cars</a>
+        <a href="about.html">About</a>
+        <a href="blog.html">Blog</a>
+        <a href="index.html#news">News</a>
+        <a href="index.html#partners">For Car Companies</a>
+      </div>
+      <div class="footer-col">
+        <h5>Community</h5>
+        <a href="index.html#home">Add your car</a>
+        <a href="index.html#feed-section">Latest entries</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 WhatCarDoYouDrive.com</span>
+    <span>Submissions are public and visible to every visitor. <a href="privacy.html" style="color:var(--muted); text-decoration:underline;">Extension privacy policy</a></span>
+  </div>
+</footer>
+<script>
+(function(){
+  const feedEl = document.getElementById('feed');
+  const boardEl = document.getElementById('board');
+  const filterRowEl = document.getElementById('filter-row');
+  const totalCountEl = document.getElementById('total-count');
+  const formMsg = document.getElementById('form-msg');
+  const form = document.getElementById('plate-form');
+  const livePingText = document.getElementById('live-ping-text');
+  const navToggle = document.getElementById('nav-toggle');
+  const navMenu = document.getElementById('nav-menu');
+  const feedExampleNote = document.getElementById('feed-example-note');
+  const boardExampleNote = document.getElementById('board-example-note');
+
+  let submissions = [];
+  let activeFilter = 'all';
+
+  const TYPE_COLORS = {
+    sedan: 'var(--c-sedan)', suv: 'var(--c-suv)', coupe: 'var(--c-coupe)',
+    convertible: 'var(--c-convertible)', truck: 'var(--c-truck)',
+    hatchback: 'var(--c-hatchback)', wagon: 'var(--c-wagon)'
+  };
+  const TYPE_LABELS = {
+    sedan: 'Sedan', suv: 'SUV', coupe: 'Coupe', convertible: 'Convertible',
+    truck: 'Truck', hatchback: 'Hatchback', wagon: 'Wagon'
+  };
+  const TYPE_ORDER = ['sedan','suv','coupe','convertible','truck','hatchback','wagon'];
+
+  const EXAMPLE_ENTRIES = [
+    { make:'Porsche', model:'911', year:'2023', type:'coupe', reason:'Wanted something that felt special every single time I drove it, not just on weekends.', name:'Example entry', ts: Date.now()-1000*60*22 },
+    { make:'Mercedes-Benz', model:'S-Class', year:'2024', type:'sedan', reason:'Long drives for work, so the ride quality and quiet cabin mattered more than the badge.', name:'Example entry', ts: Date.now()-1000*60*95 },
+    { make:'Range Rover', model:'Sport', year:'2022', type:'suv', reason:'Ground clearance for the country house, but still wanted it to feel refined in the city.', name:'Example entry', ts: Date.now()-1000*60*180 },
+    { make:'Tesla', model:'Model S Plaid', year:'2023', type:'sedan', reason:'Wanted the performance of a supercar without ever needing to visit a petrol station.', name:'Example entry', ts: Date.now()-1000*60*260 },
+    { make:'Bentley', model:'Continental GT', year:'2021', type:'convertible', reason:'Bought it after 20 years of driving sensibly. Wanted one car that felt like an occasion.', name:'Example entry', ts: Date.now()-1000*60*400 },
+    { make:'Audi', model:'RS6 Avant', year:'2024', type:'wagon', reason:'Needed space for the kids and dogs, refused to give up the performance.', name:'Example entry', ts: Date.now()-1000*60*520 },
+    { make:'Ford', model:'F-150 Raptor', year:'2023', type:'truck', reason:'Tow the boat every weekend, and wanted something that felt fun the other five days.', name:'Example entry', ts: Date.now()-1000*60*610 },
+    { make:'Mini', model:'Cooper', year:'2022', type:'hatchback', reason:'City parking is brutal here, and this is the only thing that actually fits my garage.', name:'Example entry', ts: Date.now()-1000*60*700 }
+  ];
+
+  function carSVG(type, color){
+    const wheel = `<circle cx="42" cy="86" r="13" fill="#1A1A2E"/><circle cx="158" cy="86" r="13" fill="#1A1A2E"/>`;
+    let body = '';
+    if(type === 'truck'){
+      body = `
+        <rect x="14" y="52" width="80" height="34" rx="8" fill="#fff"/>
+        <rect x="30" y="30" width="48" height="26" rx="8" fill="#fff"/>
+        <rect x="98" y="64" width="90" height="22" rx="4" fill="#fff" opacity="0.85"/>`;
+    } else if(type === 'convertible'){
+      body = `
+        <rect x="14" y="58" width="172" height="28" rx="10" fill="#fff"/>
+        <path d="M55,58 L75,38 L130,38 L150,58 Z" fill="none" stroke="#fff" stroke-width="6" opacity="0.85"/>`;
+    } else if(type === 'coupe'){
+      body = `
+        <rect x="14" y="56" width="172" height="30" rx="10" fill="#fff"/>
+        <path d="M52,56 L78,28 L128,28 L152,56 Z" fill="#fff"/>`;
+    } else if(type === 'suv'){
+      body = `
+        <rect x="12" y="46" width="176" height="40" rx="10" fill="#fff"/>
+        <rect x="42" y="22" width="116" height="30" rx="10" fill="#fff"/>`;
+    } else if(type === 'wagon'){
+      body = `
+        <rect x="12" y="50" width="176" height="36" rx="10" fill="#fff"/>
+        <path d="M46,50 L64,26 L150,26 L164,50 Z" fill="#fff"/>`;
+    } else if(type === 'hatchback'){
+      body = `
+        <rect x="20" y="54" width="140" height="32" rx="10" fill="#fff"/>
+        <path d="M50,54 L70,30 L128,30 L142,54 Z" fill="#fff"/>`;
+    } else {
+      body = `
+        <rect x="14" y="58" width="172" height="28" rx="10" fill="#fff"/>
+        <path d="M48,58 L70,32 L136,32 L156,58 Z" fill="#fff"/>`;
+    }
+    return `<svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">${body}${wheel}</svg>`;
+  }
+
+  if(navToggle && navMenu){
+    navToggle.addEventListener('click', () => {
+      const isOpen = navMenu.classList.toggle('open');
+      navToggle.classList.toggle('open', isOpen);
+      navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    navMenu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        navMenu.classList.remove('open');
+        navToggle.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        revealObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.section-head, .about-grid, .blog-grid .post, .ext-grid, .form-panel').forEach(el => {
+    el.classList.add('reveal');
+    revealObserver.observe(el);
+  });
+
+  function timeAgo(ts){
+    const diff = Date.now() - ts;
+    const mins = Math.floor(diff/60000);
+    if(mins < 1) return 'just now';
+    if(mins < 60) return mins + 'm ago';
+    const hrs = Math.floor(mins/60);
+    if(hrs < 24) return hrs + 'h ago';
+    const days = Math.floor(hrs/24);
+    return days + 'd ago';
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function animateCount(el, from, to){
+    const dur = 500;
+    const start = performance.now();
+    function step(now){
+      const p = Math.min(1, (now-start)/dur);
+      const val = Math.round(from + (to-from)*p);
+      el.textContent = val.toLocaleString();
+      if(p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  async function loadSubmissions(){
+    try{
+      const { data, error } = await window.wcdydSupabase
+        .from('submissions')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if(error) throw error;
+      submissions = (data||[]).map(row => ({
+        make: row.make, model: row.model, year: row.year,
+        type: row.body_type, reason: row.reason,
+        name: row.name, ts: new Date(row.created_at).getTime()
+      }));
+    }catch(e){
+      console.error('Could not load submissions from Supabase', e);
+      submissions = [];
+    }
+    render(true);
+  }
+
+  async function insertSubmission(entry){
+    try{
+      const { data, error } = await window.wcdydSupabase
+        .from('submissions')
+        .insert({
+          make: entry.make, model: entry.model, year: entry.year,
+          body_type: entry.type, reason: entry.reason, name: entry.name
+        })
+        .select()
+        .single();
+      if(error) throw error;
+      submissions.unshift({
+        make: data.make, model: data.model, year: data.year,
+        type: data.body_type, reason: data.reason,
+        name: data.name, ts: new Date(data.created_at).getTime()
+      });
+      return true;
+    }catch(e){
+      console.error('Could not save submission to Supabase', e);
+      return false;
+    }
+  }
+
+  const statEntriesEl = document.getElementById('stat-entries');
+  const statModelsEl = document.getElementById('stat-models');
+  const statForumEl = document.getElementById('stat-forum');
+
+  let tickerItems = [];
+  let tickerIndex = 0;
+  let tickerTimer = null;
+
+  async function loadForumForTicker(){
+    try{
+      const { data, error } = await window.wcdydSupabase
+        .from('forum_messages')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(20);
+      if(error) throw error;
+      const grouped = {};
+      (data||[]).forEach(row => {
+        if(!grouped[row.room_id]) grouped[row.room_id] = [];
+        grouped[row.room_id].push({ name: row.name, text: row.message, ts: new Date(row.created_at).getTime() });
+      });
+      return grouped;
+    }catch(e){
+      console.error('Could not load forum messages for ticker', e);
+      return {};
+    }
+  }
+
+  function showTickerItem(){
+    if(!livePingText) return;
+    if(tickerItems.length === 0){
+      livePingText.innerHTML = 'Waiting for the first entry…';
+      return;
+    }
+    const item = tickerItems[tickerIndex % tickerItems.length];
+    livePingText.style.opacity = '0';
+    setTimeout(() => {
+      livePingText.innerHTML = item.html;
+      livePingText.style.opacity = '1';
+    }, 200);
+    tickerIndex++;
+  }
+
+  async function buildTicker(){
+    const forumData = await loadForumForTicker();
+    const items = [];
+
+    submissions.forEach(s => {
+      items.push({
+        ts: s.ts,
+        html: `Just added: <span class="hl">${escapeHtml(s.year||'')} ${escapeHtml(s.make||'')} ${escapeHtml(s.model||'')}</span> to the record`
+      });
+    });
+
+    let forumTotal = 0;
+    Object.entries(forumData).forEach(([roomId, msgs]) => {
+      forumTotal += (msgs || []).length;
+      (msgs || []).forEach(m => {
+        items.push({
+          ts: m.ts,
+          html: `New message in <span class="hl">Talk Cars</span> from ${escapeHtml(m.name || 'Anonymous')}`
+        });
+      });
+    });
+
+    items.sort((a,b) => b.ts - a.ts);
+    tickerItems = items.slice(0, 8);
+    tickerIndex = 0;
+    showTickerItem();
+
+    if(statForumEl) statForumEl.textContent = forumTotal.toLocaleString() + ' messages';
+
+    if(!tickerTimer && tickerItems.length > 1){
+      tickerTimer = setInterval(showTickerItem, 4500);
+    }
+  }
+
+  function updateServiceStats(){
+    if(statEntriesEl) statEntriesEl.textContent = submissions.length.toLocaleString() + ' entries';
+    if(statModelsEl){
+      const modelSet = new Set(submissions.map(s => `${s.make} ${s.model}`.toLowerCase().trim()));
+      statModelsEl.textContent = modelSet.size.toLocaleString() + ' models';
+    }
+  }
+
+  function updateLivePing(){
+    updateServiceStats();
+    buildTicker();
+  }
+
+  livePingText && (livePingText.style.transition = 'opacity .2s ease');
+
+  function renderFilters(){
+    const pills = [{key:'all', label:'All'}].concat(TYPE_ORDER.map(t => ({key:t, label:TYPE_LABELS[t]})));
+    filterRowEl.innerHTML = pills.map(p => `
+      <button class="filter-pill ${activeFilter===p.key?'active':''}" data-filter="${p.key}">
+        ${p.key!=='all' ? `<span class="dot" style="background:${TYPE_COLORS[p.key]}"></span>` : ''}
+        ${p.label}
+      </button>
+    `).join('');
+    filterRowEl.querySelectorAll('.filter-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeFilter = btn.getAttribute('data-filter');
+        render(false);
+      });
+    });
+  }
+
+  function render(initial){
+    updateLivePing();
+    const prevTotal = parseInt(totalCountEl.textContent.replace(/,/g,'')) || 0;
+    if(initial){
+      totalCountEl.textContent = submissions.length.toLocaleString();
+      renderFilters();
+    } else {
+      animateCount(totalCountEl, prevTotal, submissions.length);
+      renderFilters();
+    }
+
+    const usingExamples = submissions.length === 0;
+    feedExampleNote.style.display = usingExamples ? 'block' : 'none';
+    boardExampleNote.style.display = usingExamples ? 'block' : 'none';
+    updateInsights(usingExamples);
+
+    const source = usingExamples ? EXAMPLE_ENTRIES : submissions;
+    const sorted = [...source].sort((a,b) => b.ts - a.ts).slice(0,24);
+    feedEl.innerHTML = sorted.map(s => {
+      const type = s.type || 'sedan';
+      const color = TYPE_COLORS[type] || 'var(--accent)';
+      return `
+      <div class="entry">
+        <div class="entry-photo" style="background:linear-gradient(135deg, ${color}, ${color}CC);">
+          <div class="type-pill">${TYPE_LABELS[type]||type}</div>
+          ${usingExamples ? '<div class="tag-example">Example</div>' : ''}
+          ${carSVG(type, color)}
+        </div>
+        <div class="entry-body">
+          <div class="make">${escapeHtml((s.make||'').toUpperCase())} &middot; ${escapeHtml(s.year||'—')}</div>
+          <div class="model serif">${escapeHtml(s.model||'')}</div>
+          <div class="reason">${escapeHtml(s.reason||'')}</div>
+          <div class="meta">
+            <span>${escapeHtml(s.name || 'Anonymous')}</span>
+            <span class="mono">${timeAgo(s.ts)}</span>
+          </div>
+        </div>
+      </div>
+    `;}).join('');
+
+    let boardSource = usingExamples ? EXAMPLE_ENTRIES : submissions;
+    if(activeFilter !== 'all'){
+      boardSource = boardSource.filter(s => (s.type||'sedan') === activeFilter);
+    }
+    const counts = {};
+    boardSource.forEach(s => {
+      const key = (s.make||'Unknown').trim() + ' ' + (s.model||'').trim();
+      if(!counts[key]) counts[key] = { count:0, type: s.type||'sedan' };
+      counts[key].count += 1;
+    });
+    const ranked = Object.entries(counts).sort((a,b) => b[1].count-a[1].count).slice(0,10);
+    const max = ranked.length ? ranked[0][1].count : 1;
+    if(ranked.length === 0){
+      boardEl.innerHTML = '<div class="empty-board">No entries for this body type yet.</div>';
+    } else {
+      boardEl.innerHTML = ranked.map((r,i) => `
+        <div class="board-row">
+          <div class="rank">${String(i+1).padStart(2,'0')}</div>
+          <div class="board-type-dot" style="background:${TYPE_COLORS[r[1].type]||'var(--accent)'}"></div>
+          <div class="board-name">${escapeHtml(r[0])}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${(r[1].count/max*100).toFixed(0)}%; background:${TYPE_COLORS[r[1].type]||'var(--accent)'}"></div></div>
+          <div class="board-count">${r[1].count} driver${r[1].count===1?'':'s'}</div>
+        </div>
+      `).join('');
+    }
+  }
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const make = document.getElementById('input-make').value.trim();
+    const model = document.getElementById('input-model').value.trim();
+    const year = document.getElementById('input-year').value.trim();
+    const type = document.getElementById('input-bodytype').value;
+    const reason = document.getElementById('input-reason').value.trim();
+    const name = document.getElementById('input-name').value.trim();
+
+    if(!make || !model || !reason || !type){
+      formMsg.textContent = 'Add a make, model, body type, and a reason before submitting.';
+      return;
+    }
+
+    const btn = form.querySelector('.submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Adding…';
+
+    const ok = await insertSubmission({ make, model, year, type, reason, name: name || 'Anonymous' });
+
+    if(!ok){
+      formMsg.textContent = 'Something went wrong saving your entry. Please try again.';
+      btn.disabled = false;
+      btn.textContent = 'Join the record';
+      return;
+    }
+
+    render(false);
+
+    form.reset();
+    formMsg.textContent = 'Thank you — you\'re now part of the record.';
+    btn.disabled = false;
+    btn.textContent = 'Join the record';
+
+    document.getElementById('feed-section').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  // --- Find similar cars ---
+  const STOPWORDS = new Set(['the','a','an','to','of','for','and','my','with','was','is','it','this','that','in','on','than','over','i','me','but','so','be','are','have','had','not','just','more','than','from','out','at','as','or','than']);
+  function keywords(text){
+    return (text||'').toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(w => w.length > 3 && !STOPWORDS.has(w));
+  }
+  function overlapScore(a, b){
+    const wa = new Set(keywords(a));
+    const wb = keywords(b);
+    let score = 0;
+    wb.forEach(w => { if(wa.has(w)) score += 1; });
+    return score;
+  }
+
+  const similarInput = document.getElementById('similar-input');
+  const similarBtn = document.getElementById('similar-btn');
+  const similarResults = document.getElementById('similar-results');
+  const similarHint = document.getElementById('similar-hint');
+
+  function currentDataset(){
+    return submissions.length === 0 ? EXAMPLE_ENTRIES : submissions;
+  }
+
+  function findSimilar(query){
+    const dataset = currentDataset();
+    const q = query.trim().toLowerCase();
+    if(!q) return { target:null, results:[] };
+
+    const target = dataset.find(item => `${item.make} ${item.model}`.toLowerCase().includes(q) || q.includes((item.model||'').toLowerCase()));
+    if(!target) return { target:null, results:[] };
+
+    const candidates = dataset.filter(item => item !== target && !(item.make===target.make && item.model===target.model));
+    const scored = candidates.map(item => ({
+      item,
+      score: (item.type === target.type ? 3 : 0) + overlapScore(target.reason, item.reason)
+    }));
+    scored.sort((a,b) => b.score - a.score);
+    return { target, results: scored.slice(0,3) };
+  }
+
+  function renderSimilar(){
+    const q = similarInput.value;
+    const { target, results } = findSimilar(q);
+
+    if(!q.trim()){
+      similarResults.innerHTML = '';
+      similarHint.textContent = 'Matches by body type and by what people actually said about it, using every entry in the record.';
+      return;
+    }
+
+    if(!target){
+      similarResults.innerHTML = '';
+      const dataset = currentDataset();
+      const sample = dataset.slice(0,3).map(d => `${d.make} ${d.model}`).join(', ');
+      similarHint.textContent = `We don't have that one in the record yet. Try ${sample}.`;
+      return;
+    }
+
+    if(results.length === 0){
+      similarResults.innerHTML = '';
+      similarHint.textContent = `Found ${target.make} ${target.model}, but nothing similar in the record yet. Check back as more entries come in.`;
+      return;
+    }
+
+    similarHint.textContent = `Because you drive (or asked about) a ${target.make} ${target.model}:`;
+    similarResults.innerHTML = results.map(r => {
+      const type = r.item.type || 'sedan';
+      const color = TYPE_COLORS[type] || 'var(--accent)';
+      const why = r.item.type === target.type ? `Same body type: ${TYPE_LABELS[type]}` : 'Similar reasons given';
+      return `
+        <div class="sim-card">
+          <div class="sim-photo" style="background:linear-gradient(135deg, ${color}, ${color}CC);">${carSVG(type, color)}</div>
+          <div class="sim-body">
+            <div class="make">${escapeHtml((r.item.make||'').toUpperCase())}</div>
+            <div class="model serif">${escapeHtml(r.item.model||'')}</div>
+            <div class="sim-why">${why}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  if(similarBtn && similarInput){
+    similarBtn.addEventListener('click', renderSimilar);
+    similarInput.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ e.preventDefault(); renderSimilar(); } });
+  }
+
+  // --- Live insight snapshot for car companies ---
+  const insightTotal = document.getElementById('insight-total');
+  const insightTopType = document.getElementById('insight-top-type');
+  const insightTopModel = document.getElementById('insight-top-model');
+  const insightThemes = document.getElementById('insight-themes');
+  const insightExampleTag = document.getElementById('insight-example-tag');
+
+  function updateInsights(usingExamples){
+    const dataset = usingExamples ? EXAMPLE_ENTRIES : submissions;
+    insightExampleTag.style.display = usingExamples ? 'inline' : 'none';
+    insightTotal.textContent = dataset.length.toLocaleString();
+
+    const typeCounts = {};
+    const modelCounts = {};
+    const wordCounts = {};
+    dataset.forEach(item => {
+      const t = item.type || 'sedan';
+      typeCounts[t] = (typeCounts[t]||0) + 1;
+      const key = `${item.make} ${item.model}`.trim();
+      modelCounts[key] = (modelCounts[key]||0) + 1;
+      keywords(item.reason).forEach(w => { wordCounts[w] = (wordCounts[w]||0) + 1; });
+    });
+
+    const topType = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1])[0];
+    insightTopType.textContent = topType ? `${TYPE_LABELS[topType[0]]||topType[0]} (${Math.round(topType[1]/dataset.length*100)}%)` : '—';
+
+    const topModel = Object.entries(modelCounts).sort((a,b)=>b[1]-a[1])[0];
+    insightTopModel.textContent = topModel ? topModel[0] : '—';
+
+    const topWords = Object.entries(wordCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    insightThemes.innerHTML = topWords.length
+      ? topWords.map(w => `<span class="theme-pill">${escapeHtml(w[0])}</span>`).join('')
+      : '<span class="theme-pill">Not enough data yet</span>';
+
+    updateVisitorCount();
+  }
+
+  const insightVisitorsEl = document.getElementById('insight-visitors');
+  async function updateVisitorCount(){
+    if(!insightVisitorsEl) return;
+    try{
+      const { count, error } = await window.wcdydSupabase
+        .from('site_visitors')
+        .select('*', { count: 'exact', head: true });
+      if(error) throw error;
+      insightVisitorsEl.textContent = (count||0).toLocaleString();
+    }catch(e){
+      console.error('Could not load visitor count from Supabase', e);
+      insightVisitorsEl.textContent = '—';
+    }
+  }
+
+  const leadForm = document.getElementById('lead-form');
+  if(leadForm){
+    leadForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      const company = document.getElementById('lead-company').value.trim();
+      const email = document.getElementById('lead-email').value.trim();
+      const interest = document.getElementById('lead-interest').value;
+      const subject = encodeURIComponent(`Data partnership inquiry — ${company}`);
+      const body = encodeURIComponent(`Company: ${company}\nWork email: ${email}\nInterested in: ${interest}\n\n(Add any details about what you're looking for here.)`);
+      window.location.href = `mailto:partnerships@whatcardoyoudrive.com?subject=${subject}&body=${body}`;
+    });
+  }
+
+  loadSubmissions();
+})();
+
+</script>
+</body>
+</html>
